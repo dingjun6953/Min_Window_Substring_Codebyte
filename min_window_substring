@@ -1,0 +1,90 @@
+/*
+Min Window Substring
+Have the function MinWindowSubstring(strArr) take the array of strings stored in strArr, which will contain only two strings, the first parameter being the string N and the second parameter being a string K of some characters, and your goal is to determine the smallest substring of N that contains all the characters in K. For example: if strArr is ["aaabaaddae", "aed"] then the smallest substring of N that contains the characters a, e, and d is "dae" located at the end of the string. So for this example your program should return the string dae.
+
+Another example: if strArr is ["aabdccdbcacd", "aad"] then the smallest substring of N that contains all of the characters in K is "aabd" which is located at the beginning of the string. Both parameters will be strings ranging in length from 1 to 50 characters and all of K's characters will exist somewhere in the string N. Both strings will only contains lowercase alphabetic characters.
+Examples
+Input: {"ahffaksfajeeubsne", "jefaa"}
+Output: aksfaje
+Input: {"aaffhkksemckelloe", "fhea"}
+Output: affhkkse
+
+*/
+#include <iostream>
+#include <string>
+#include <vector> 
+#include <map>
+#include <climits>
+using namespace std;
+
+string MinWindowSubstring(string strArr[], int arrLength) {
+   // code goes here  
+  string str=strArr[0]; //the first element is the string
+  string token=strArr[1]; //the second element is the token
+  string output; //final substring for output
+  vector<string> text; //to store all substrings
+  vector<string> result; //to strore all substrings having token
+  map<char,int> map_token; 
+  map<char, int>::iterator it;
+  int min=INT_MAX;
+  int length=str.length();
+
+  //To find all substrings and store them into a vector.
+for(int i=0;i<length;i++)
+{
+    for(int j=1;j<length-i+1;j++)
+    {
+            text.push_back(str.substr(i,j));
+    }
+}
+
+//set a map list for the token
+for(int i=0; i<token.size();i++)
+{
+    map_token.insert(make_pair(token[i], 0));
+}
+for(it=map_token.begin(); it!=map_token.end(); ++it){
+    for(int k=0; k<token.size();k++){
+    if(it->first==token[k]) (it->second)++; 
+    }
+}
+//find all substrings having the token
+for(int i=0; i<text.size(); i++)
+{
+    for(it=map_token.begin(); it!=map_token.end(); ++it)
+    {
+        int count=0;
+        for (auto elm:text[i])
+        {
+            if(it->first==elm) count++;
+        }
+
+        if (count >= it->second) 
+        {
+            continue;
+        }
+        else break; 
+    }
+    if(it==map_token.end()) result.push_back(text[i]); 
+}
+
+//find the minimal length of all substrings having the token
+for (int i=0; i<result.size();i++)
+{
+  if (result[i].length()<min)  
+  {
+      output=result[i];
+      min=result[i].length();
+  }
+}
+
+  return output;
+}
+
+int main(void) { 
+  //string A[] = {"ahffaksfajeeubsne", "jefaa"}; //test example1
+  string A[]={"aaffhkksemckelloe", "fhea"}; //test example2 
+  int arrLength = sizeof(A) / sizeof(*A);
+  cout << MinWindowSubstring(A, arrLength);
+  return 0;
+}
